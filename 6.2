@@ -1,0 +1,91 @@
+using System;
+using System.Collections;
+
+interface IRoom
+{
+    double Area { get; }
+    int Windows { get; set; }
+}
+
+class ClassRoom : IRoom, IComparable
+{
+    public double Area { get; }
+    public int Windows { get; set; }
+
+    public ClassRoom(double area)
+    {
+        Area = area;
+    }
+
+    public int CompareTo(object obj)
+    {
+        IRoom room = obj as IRoom;
+        if (room != null)
+        {
+            return this.Area.CompareTo(room.Area);
+        }
+        throw new ArgumentException("Object is not a Room");
+    }
+}
+
+class MyRoom : IRoom, IComparable
+{
+    public double Area { get; }
+    public int Windows { get; set; }
+
+    public MyRoom(double area)
+    {
+        Area = area;
+    }
+
+    public int CompareTo(object obj)
+    {
+        IRoom room = obj as IRoom;
+        if (room != null)
+        {
+            return this.Area.CompareTo(room.Area);
+        }
+        throw new ArgumentException("Object is not a Room");
+    }
+}
+
+class RoomWindowComparer : IComparer
+{
+    public int Compare(object x, object y)
+    {
+        IRoom room1 = x as IRoom;
+        IRoom room2 = y as IRoom;
+        if (room1 != null && room2 != null)
+        {
+            return room1.Windows.CompareTo(room2.Windows);
+        }
+        throw new ArgumentException("Objects are not Rooms");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        ClassRoom classRoom1 = new ClassRoom(50.5);
+        classRoom1.Windows = 3;
+
+        ClassRoom classRoom2 = new ClassRoom(40.2);
+        classRoom2.Windows = 2;
+
+        MyRoom myRoom1 = new MyRoom(30.7);
+        myRoom1.Windows = 4;
+
+        MyRoom myRoom2 = new MyRoom(35.8);
+        myRoom2.Windows = 2;
+
+        Console.WriteLine("Comparing by area:");
+        Console.WriteLine(classRoom1.CompareTo(classRoom2));
+        Console.WriteLine(myRoom1.CompareTo(myRoom2));
+
+        Console.WriteLine("\nComparing by number of windows:");
+        RoomWindowComparer windowComparer = new RoomWindowComparer();
+        Console.WriteLine(windowComparer.Compare(classRoom1, classRoom2));
+        Console.WriteLine(windowComparer.Compare(myRoom1, myRoom2));
+    }
+}
